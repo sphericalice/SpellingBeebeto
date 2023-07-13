@@ -3,9 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:SpellingBeebeto.ViewModels"
              x:Class="SpellingBeebeto.Views.GameBoard">
-    <ContentPage.BindingContext>
-        <viewModels:GameBoardVM />
-    </ContentPage.BindingContext>
     <VerticalStackLayout Spacing="10" Margin="10">
         <HorizontalStackLayout Spacing="10">
             <Image Source="bee.png"
@@ -15,7 +12,45 @@
             <Label FontSize="22" Text="{Binding Version}" VerticalOptions="End" />
         </HorizontalStackLayout>
 
-        <Label Text="{Binding Message}" />
-    </VerticalStackLayout>
+        <HorizontalStackLayout Spacing="10">
+            <Label Text="{Binding Message}" />
+        </HorizontalStackLayout>
 
+        <Label Text="{Binding Word}" FontSize="Header" />
+
+        <VerticalStackLayout Spacing="10" Margin="10">
+            <CollectionView ItemsSource="{Binding Tiles}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Button Text="{Binding Letter}" Command="{Binding ClickTileCommand}">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Style.Triggers>
+                                        <DataTrigger TargetType="Button" Binding="{Binding IsKeyTile}" Value="True">
+                                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Primary}}" />
+                                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
+                                            <Setter Property="HeightRequest" Value="50"/>
+                                            <Setter Property="WidthRequest" Value="50"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Button" Binding="{Binding IsKeyTile}" Value="False">
+                                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource Secondary}}" />
+                                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource Black}}" />
+                                            <Setter Property="HeightRequest" Value="50"/>
+                                            <Setter Property="WidthRequest" Value="50"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <HorizontalStackLayout Spacing="10" Margin="10">
+                <Button Text="Delete" Command="{Binding DeleteLetterCommand}" />
+                <ImageButton Source="icon_refresh.png" Command="{Binding ShuffleTilesCommand}" />
+                <Button Text="Submit" Command="{Binding SubmitWordCommand}" />
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </VerticalStackLayout>
 </ContentPage>

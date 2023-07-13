@@ -11,8 +11,33 @@ public static class MauiProgram
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-			});
+			})
+            .RegisterViewModels()
+            .RegisterViews()
+            .RegisterModels();
 
-		return builder.Build();
+        return builder.Build();
 	}
+    public static MauiAppBuilder RegisterViewModels(this MauiAppBuilder mauiAppBuilder)
+    {
+        mauiAppBuilder.Services.AddSingleton<ViewModels.GameBoardVM>();
+
+        mauiAppBuilder.Services.AddTransient<ViewModels.TileVM>();
+
+        return mauiAppBuilder;
+    }
+    public static MauiAppBuilder RegisterViews(this MauiAppBuilder mauiAppBuilder)
+    {
+        mauiAppBuilder.Services.AddSingleton<Views.GameBoard>();
+
+        return mauiAppBuilder;
+    }
+    public static MauiAppBuilder RegisterModels(this MauiAppBuilder mauiAppBuilder)
+    {
+        mauiAppBuilder.Services.AddSingleton<Models.GameBoard>();
+
+        mauiAppBuilder.Services.AddTransient<Models.Tile>();
+
+        return mauiAppBuilder;
+    }
 }

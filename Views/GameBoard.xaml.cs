@@ -35,12 +35,10 @@ public partial class GameBoard : ContentPage
         {
             case AnimationState.CorrectAnswer:
                 WordLabel.Animate("Fade", Fade(WordLabel), length: 20, easing: Easing.CubicOut, finished: (v, c) => viewModel.NotifyAnimationComplete());
-                break;  
+                break;
             case AnimationState.IncorrectAnswer:
                 WordLabel.Animate("Shake", Shake(WordLabel), length: 500, easing: Easing.Linear, finished: (v, c) => viewModel.NotifyAnimationComplete());
-                break;  
-            default:
-                return;
+                break;
         }
     }
 }

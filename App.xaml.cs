@@ -6,8 +6,8 @@ public partial class App : Application
 {
     private readonly GameBoard GameBoard;
     public App(GameBoard gameBoard)
-	{
-		InitializeComponent();
+    {
+        InitializeComponent();
 
         this.GameBoard = gameBoard;
     }

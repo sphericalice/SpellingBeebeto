@@ -14,9 +14,9 @@ namespace SpellingBeebeto.Models
             IsKeyTile = isKeyTile;
         }
 
-        public void TryAddTileToWord()
+        internal void TryAddTileToWord()
         {
-            GameBoard.AddLetterToWord(Letter);
+            GameBoard.TryAddTileToWord(this);
         }
     }
 }

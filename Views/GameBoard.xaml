@@ -16,27 +16,23 @@
             <Label Text="{Binding Message}" />
         </HorizontalStackLayout>
 
-        <Label Text="{Binding Word}" FontSize="Header" />
+        <Label x:Name="WordLabel" Text="{Binding Word.Text}" FontSize="Header" HorizontalOptions="Center"/>
 
-        <VerticalStackLayout Spacing="10" Margin="10">
+        <VerticalStackLayout Spacing="10" Margin="10" HorizontalOptions="Center">
             <CollectionView ItemsSource="{Binding Tiles}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Button Text="{Binding Letter}" Command="{Binding ClickTileCommand}">
+                        <Button Text="{Binding Letter}" Command="{Binding ClickTileCommand}" VerticalOptions="Start" HeightRequest="50" WidthRequest="50">
                             <Button.Style>
                                 <Style TargetType="Button">
                                     <Style.Triggers>
                                         <DataTrigger TargetType="Button" Binding="{Binding IsKeyTile}" Value="True">
                                             <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Primary}}" />
                                             <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
-                                            <Setter Property="HeightRequest" Value="50"/>
-                                            <Setter Property="WidthRequest" Value="50"/>
                                         </DataTrigger>
                                         <DataTrigger TargetType="Button" Binding="{Binding IsKeyTile}" Value="False">
                                             <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource Secondary}}" />
                                             <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource Black}}" />
-                                            <Setter Property="HeightRequest" Value="50"/>
-                                            <Setter Property="WidthRequest" Value="50"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -45,8 +41,10 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+        </VerticalStackLayout>
 
-            <HorizontalStackLayout Spacing="10" Margin="10">
+        <VerticalStackLayout Spacing="10" Margin="10" HorizontalOptions="Center">
+            <HorizontalStackLayout Spacing="10" Margin="10" HorizontalOptions="Center">
                 <Button Text="Delete" Command="{Binding DeleteLetterCommand}" />
                 <ImageButton Source="icon_refresh.png" Command="{Binding ShuffleTilesCommand}" />
                 <Button Text="Submit" Command="{Binding SubmitWordCommand}" />

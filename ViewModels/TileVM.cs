@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using SpellingBeebeto.Models;
 using SpellingBeebeto.Utilities;
-using System.ComponentModel;
 using System.Windows.Input;
 
 namespace SpellingBeebeto.ViewModels
@@ -9,7 +8,7 @@ namespace SpellingBeebeto.ViewModels
     public class TileVM : BindableBase
     {
         private readonly Tile Model;
-
+        public GameBoardVM GameBoard { get; set; }
         public char Letter => Model.Letter;
         public bool IsKeyTile => Model.IsKeyTile;
         public ICommand ClickTileCommand { get; }
@@ -17,7 +16,14 @@ namespace SpellingBeebeto.ViewModels
         {
             Model = model;
 
-            ClickTileCommand = new RelayCommand(Model.TryAddTileToWord);
+            ClickTileCommand = new RelayCommand(TryAddTileToWord);
+        }
+
+        private void TryAddTileToWord()
+        {
+            if (!GameBoard.CanAddTile()) return;
+            Model.TryAddTileToWord();
+            GameBoard.RejectOverlyLongWord();
         }
     }
 }

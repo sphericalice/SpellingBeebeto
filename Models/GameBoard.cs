@@ -4,14 +4,13 @@ namespace SpellingBeebeto.Models;
 
 public class GameBoard : BindableBase
 {
-    private readonly int MinWordLength = 4;
-    private readonly int MaxWordLength = 12;
+    public Word Word { get; private set; }
     private IEnumerable<string> WordList;
-    public string Word { get; private set; }
+    private ICollection<string> SubmittedWords;
     public IEnumerable<Tile> Tiles { get; private set; }
     public GameBoard()
     {
-        Word = "";
+        Word = new("");
         Tiles = new List<Tile>()
         {
             new Tile(this, 'H', isKeyTile: true),
@@ -27,28 +26,27 @@ public class GameBoard : BindableBase
             "RUNE",
             "NONE",
         };
+        SubmittedWords = new HashSet<string>();
     }
 
-    internal void AddLetterToWord(char letter)
+    internal bool WordIsTooShort() => Word.Text.Length < Word.MinWordLength;
+    internal bool WordIsTooLong() => Word.Text.Length >= Word.MaxWordLength;
+    internal bool IsWordValid()
     {
-        if (Word.Length >= MaxWordLength)
+        if (WordIsTooShort()) return false;
+        if (WordIsTooLong()) return false;
+        if (!WordList.Contains(Word.Text)) return false;
+        return true;
+    }
+
+    internal void SubmitWord()
+    {
+        if (IsWordValid())
         {
-            RejectWord();
-            return;
+            SubmittedWords.Add(Word.Text);
+            // TODO: Increment score for words in the word list
         }
-        Word += letter;
-        NotifyPropertyChanged(nameof(Word));
-    }
-
-    private void RejectWord()
-    {
-        Word = "";
-        NotifyPropertyChanged(nameof(Word));
-    }
-
-    internal void DeleteLastLetter()
-    {
-        if (Word.Length > 1) Word = Word.Remove(Word.Length - 1, 1);
+        Word.Text = "";
         NotifyPropertyChanged(nameof(Word));
     }
 
@@ -58,15 +56,23 @@ public class GameBoard : BindableBase
         NotifyPropertyChanged(nameof(Tiles));
     }
 
-    internal void SubmitWord()
+    internal void TryAddTileToWord(Tile tile)
     {
-        if (Word.Length < MinWordLength || !WordList.Contains(Word))
-        {
-            RejectWord();
-            return;
-        }
-        // TODO: Increment score for words in the word list
-        Word = "";
+        if (WordIsTooLong()) return;
+        Word.AddLetter(tile.Letter);
         NotifyPropertyChanged(nameof(Word));
+    }
+
+    internal void DeleteLastLetter()
+    {
+        Word.DeleteLastLetter();
+        NotifyPropertyChanged(nameof(Word));
+    }
+
+    internal bool CanSubmitWord()
+    {
+        if (!IsWordValid()) return false;
+        if (SubmittedWords.Contains(Word.Text)) return false;
+        return true;
     }
 }

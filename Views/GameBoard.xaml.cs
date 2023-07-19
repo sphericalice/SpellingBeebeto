@@ -1,6 +1,6 @@
-using SpellingBeebeto.ViewModels;
+using SpellingBeebeto.Utilities;
+using SpellingBeebeto.ViewModels.GameElements;
 using System.ComponentModel;
-using static SpellingBeebeto.ViewModels.GameBoardVM;
 
 namespace SpellingBeebeto.Views;
 

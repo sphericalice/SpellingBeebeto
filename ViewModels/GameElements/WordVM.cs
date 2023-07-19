@@ -1,7 +1,7 @@
-﻿using SpellingBeebeto.Models;
+﻿using SpellingBeebeto.Models.GameElements;
 using SpellingBeebeto.Utilities;
 
-namespace SpellingBeebeto.ViewModels
+namespace SpellingBeebeto.ViewModels.GameElements
 {
     public class WordVM : BindableBase
     {

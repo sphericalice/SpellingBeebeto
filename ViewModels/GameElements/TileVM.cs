@@ -1,9 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using SpellingBeebeto.Models;
+using SpellingBeebeto.Models.GameElements;
 using SpellingBeebeto.Utilities;
 using System.Windows.Input;
 
-namespace SpellingBeebeto.ViewModels
+namespace SpellingBeebeto.ViewModels.GameElements
 {
     public class TileVM : BindableBase
     {

@@ -1,11 +1,11 @@
 ﻿using SpellingBeebeto.Utilities;
 using System.Collections.ObjectModel;
 
-namespace SpellingBeebeto.Models;
+namespace SpellingBeebeto.Models.GameElements;
 
 public class GameBoard : BindableBase
 {
-    private readonly IEnumerable<string> WordList;
+    private readonly Random random = new();
     public RuleSet RuleSet { get; private set; }
     public Word Word { get; private set; }
     public Tile KeyTile { get; private set; }
@@ -13,34 +13,12 @@ public class GameBoard : BindableBase
     public ObservableCollection<string> AcceptedWords { get; private set; }
     public GameBoard()
     {
+        RuleSet = new RuleSet("HARUNEO", random.Next(0, Configuration.Configuration.WordSize - 1));
+        KeyTile = new Tile(this, RuleSet.KeyLetter, isKeyTile: true);
+        Tiles = RuleSet.Letters.Select(letter => new Tile(this, letter));
+
         Word = new("");
-        KeyTile = new Tile(this, 'O', isKeyTile: true);
-        Tiles = new List<Tile>()
-        {
-            new Tile(this, 'H'),
-            new Tile(this, 'A'),
-            new Tile(this, 'R'),
-            new Tile(this, 'U'),
-            new Tile(this, 'N'),
-            new Tile(this, 'E'),
-        };
         AcceptedWords = new ObservableCollection<string>() { "" };
-        RuleSet = new RuleSet(KeyTile.Letter);
-        WordList = new List<string>()
-        {
-            "RUNE",
-            "NONE",
-            "AURORA",
-            "AURORAE",
-            "EARN",
-            "EARNER",
-            "HEAR",
-            "HEARER",
-            "AREAR",
-            "NEURON",
-            "NEURONE",
-            "NEON",
-        };
     }
 
     internal bool WordIsTooShort() => Word.Text.Length < RuleSet.MinWordLength;
@@ -50,7 +28,7 @@ public class GameBoard : BindableBase
         if (WordIsTooShort()) return false;
         if (WordIsTooLong()) return false;
         if (!Word.Text.Contains(RuleSet.KeyLetter)) return false;
-        if (!WordList.Contains(Word.Text)) return false;
+        if (!RuleSet.WordList.Contains(Word.Text)) return false;
         return true;
     }
 
@@ -91,4 +69,6 @@ public class GameBoard : BindableBase
         if (AcceptedWords.Any(text => text.ToLower() == Word.Text.ToLower())) return false;
         return true;
     }
+
+    internal bool WordIsEmpty() => Word.IsEmpty();
 }

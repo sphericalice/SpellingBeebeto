@@ -1,20 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using SpellingBeebeto.Models;
+using SpellingBeebeto.Models.GameElements;
 using SpellingBeebeto.Utilities;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-namespace SpellingBeebeto.ViewModels;
+namespace SpellingBeebeto.ViewModels.GameElements;
 
 public class GameBoardVM : BindableBase
 {
-    public enum AnimationState
-    {
-        NotAnimating,
-        CorrectAnswer,
-        IncorrectAnswer,
-    }
-
     private readonly GameBoard Model;
 
     public string Title => AppInfo.Name;
@@ -44,6 +37,7 @@ public class GameBoardVM : BindableBase
 
     public void SubmitWord()
     {
+        if (Model.WordIsEmpty()) return;
         CurrentAnimationState = Model.CanSubmitWord() ? AnimationState.CorrectAnswer : AnimationState.IncorrectAnswer;
         NotifyPropertyChanged(nameof(Word));
     }

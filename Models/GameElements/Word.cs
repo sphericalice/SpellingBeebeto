@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace SpellingBeebeto.Models
+namespace SpellingBeebeto.Models.GameElements
 {
     public class Word
     {
@@ -28,5 +28,7 @@ namespace SpellingBeebeto.Models
             var textinfo = CultureInfo.CurrentCulture.TextInfo;
             return textinfo.ToTitleCase(Text.ToLower());
         }
+
+        internal bool IsEmpty() => Text.Length == 0;
     }
 }

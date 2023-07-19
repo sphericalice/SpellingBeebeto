@@ -2,8 +2,9 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:SpellingBeebeto.ViewModels"
-             x:Class="SpellingBeebeto.Views.GameBoard">
-    <VerticalStackLayout Spacing="10" Margin="10">
+             x:Class="SpellingBeebeto.Views.GameBoard"
+             xmlns:fontAwesome="SpellingBeebeto.Utilities.FontAwesomeIcons">
+    <VerticalStackLayout Spacing="10" Margin="10" HorizontalOptions="Center">
         <HorizontalStackLayout Spacing="10">
             <Image Source="bee.png"
                    SemanticProperties.Description="The Spelling Beebeto bee!"
@@ -12,43 +13,51 @@
             <Label FontSize="22" Text="{Binding Version}" VerticalOptions="End" />
         </HorizontalStackLayout>
 
-        <HorizontalStackLayout Spacing="10">
-            <Label Text="{Binding Message}" />
+        <CollectionView ItemsSource="{Binding AcceptedWords}" InputTransparent="True" ItemsLayout="HorizontalList" EmptyView="Type words to earn points!">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Label Text="{Binding}" Margin="10" FontSize="Medium" />
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+            <Label x:Name="WordLabel" Text="{Binding Word.Text}" FontSize="Large"/>
         </HorizontalStackLayout>
 
-        <Label x:Name="WordLabel" Text="{Binding Word.Text}" FontSize="Header" HorizontalOptions="Center"/>
+        <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+            <Button Text="{Binding Tiles[0].Letter}" Command="{Binding Tiles[0].ClickTileCommand}" VerticalOptions="Start" HeightRequest="50" WidthRequest="50"/>
+            <Button Text="{Binding Tiles[1].Letter}" Command="{Binding Tiles[1].ClickTileCommand}" VerticalOptions="Start" HeightRequest="50" WidthRequest="50"/>
+        </HorizontalStackLayout>
 
-        <VerticalStackLayout Spacing="10" Margin="10" HorizontalOptions="Center">
-            <CollectionView ItemsSource="{Binding Tiles}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Button Text="{Binding Letter}" Command="{Binding ClickTileCommand}" VerticalOptions="Start" HeightRequest="50" WidthRequest="50">
-                            <Button.Style>
-                                <Style TargetType="Button">
-                                    <Style.Triggers>
-                                        <DataTrigger TargetType="Button" Binding="{Binding IsKeyTile}" Value="True">
-                                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Primary}}" />
-                                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
-                                        </DataTrigger>
-                                        <DataTrigger TargetType="Button" Binding="{Binding IsKeyTile}" Value="False">
-                                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource Secondary}}" />
-                                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource Black}}" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-        </VerticalStackLayout>
+        <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+            <Button Text="{Binding Tiles[2].Letter}" Command="{Binding Tiles[2].ClickTileCommand}" VerticalOptions="Start" HeightRequest="50" WidthRequest="50"/>
+            <Button Text="{Binding KeyTile.Letter}" Command="{Binding KeyTile.ClickTileCommand}" VerticalOptions="Start" HeightRequest="50" WidthRequest="50">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Primary}}" />
+                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
+                    </Style>
+                </Button.Style>
+            </Button>
+            <Button Text="{Binding Tiles[3].Letter}" Command="{Binding Tiles[3].ClickTileCommand}" VerticalOptions="Start" HeightRequest="50" WidthRequest="50"/>
+        </HorizontalStackLayout>
 
-        <VerticalStackLayout Spacing="10" Margin="10" HorizontalOptions="Center">
-            <HorizontalStackLayout Spacing="10" Margin="10" HorizontalOptions="Center">
-                <Button Text="Delete" Command="{Binding DeleteLetterCommand}" />
-                <ImageButton Source="icon_refresh.png" Command="{Binding ShuffleTilesCommand}" />
-                <Button Text="Submit" Command="{Binding SubmitWordCommand}" />
-            </HorizontalStackLayout>
-        </VerticalStackLayout>
+        <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+        <Button Text="{Binding Tiles[4].Letter}" Command="{Binding Tiles[4].ClickTileCommand}" VerticalOptions="Start" HeightRequest="50" WidthRequest="50"/>
+        <Button Text="{Binding Tiles[5].Letter}" Command="{Binding Tiles[5].ClickTileCommand}" VerticalOptions="Start" HeightRequest="50" WidthRequest="50"/>
+        </HorizontalStackLayout>
+
+        <HorizontalStackLayout Spacing="10" Margin="10" HorizontalOptions="Center">
+            <Button Text="Delete" Command="{Binding DeleteLetterCommand}" />
+            <Button Text="{x:Static fontAwesome:FontAwesomeIcons.Shuffle}" Command="{Binding ShuffleTilesCommand}">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="FontFamily" Value="FontAwesomeSolid"/>
+                    </Style>
+                </Button.Style>
+            </Button>
+            <Button Text="Submit" Command="{Binding SubmitWordCommand}" />
+        </HorizontalStackLayout>
     </VerticalStackLayout>
 </ContentPage>

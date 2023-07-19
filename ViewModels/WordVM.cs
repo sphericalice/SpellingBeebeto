@@ -20,10 +20,5 @@ namespace SpellingBeebeto.ViewModels
         {
             Model = model;
         }
-        public void DeleteLastLetter()
-        {
-            Model.DeleteLastLetter();
-            NotifyPropertyChanged(nameof(Text));
-        }
     }
 }

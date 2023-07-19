@@ -19,9 +19,10 @@ public class GameBoardVM : BindableBase
 
     public string Title => AppInfo.Name;
     public string Version => AppInfo.VersionString;
-    public string Message => "Welcome to Spelling Beebeto";
     public WordVM Word { get; private set; }
+    public TileVM KeyTile { get; private set; }
     public ObservableCollection<TileVM> Tiles { get; private set; }
+    public ObservableCollection<string> AcceptedWords => Model.AcceptedWords;
     public IRelayCommand DeleteLetterCommand { get; }
     public IRelayCommand ShuffleTilesCommand { get; }
     public IRelayCommand SubmitWordCommand { get; }
@@ -31,6 +32,7 @@ public class GameBoardVM : BindableBase
     {
         Model = model;
         Word = new(Model.Word);
+        KeyTile = new(Model.KeyTile) { GameBoard = this };
         Tiles = UpdateTiles();
         Model.PropertyChanged += UpdateVM;
 
@@ -39,6 +41,7 @@ public class GameBoardVM : BindableBase
         SubmitWordCommand = new RelayCommand(SubmitWord);
     }
     private ObservableCollection<TileVM> UpdateTiles() => new(Model.Tiles.Select(tile => new TileVM(tile) { GameBoard = this }));
+
     public void SubmitWord()
     {
         CurrentAnimationState = Model.CanSubmitWord() ? AnimationState.CorrectAnswer : AnimationState.IncorrectAnswer;
@@ -53,6 +56,7 @@ public class GameBoardVM : BindableBase
             Tiles = UpdateTiles();
             NotifyPropertyChanged(nameof(Tiles));
         }
+        if (e.PropertyName == nameof(AcceptedWords)) NotifyPropertyChanged(nameof(AcceptedWords));
     }
 
     internal void NotifyAnimationComplete()

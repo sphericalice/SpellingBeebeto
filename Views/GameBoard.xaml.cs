@@ -28,17 +28,18 @@ public partial class GameBoard : ContentPage
 
     private static Animation Fade(VisualElement view) => new(v => view.FadeTo(20, 1));
 
+    private readonly Dictionary<AnimationState, Action<GameBoardVM, VisualElement>> animations = new()
+    {
+        [AnimationState.CorrectAnswer] = (viewModel, visualElement) => visualElement.Animate("Fade", Fade(visualElement), length: 20, easing: Easing.CubicOut, finished: (v, c) => viewModel.NotifyAnimationComplete()),
+        [AnimationState.IncorrectAnswer] = (viewModel, visualElement) => visualElement.Animate("Shake", Shake(visualElement), length: 500, easing: Easing.Linear, finished: (v, c) => viewModel.NotifyAnimationComplete()),
+    };
+
     private void GameBoardVM_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
         if (sender is not GameBoardVM viewModel) return;
-        switch (viewModel.CurrentAnimationState)
-        {
-            case AnimationState.CorrectAnswer:
-                WordLabel.Animate("Fade", Fade(WordLabel), length: 20, easing: Easing.CubicOut, finished: (v, c) => viewModel.NotifyAnimationComplete());
-                break;
-            case AnimationState.IncorrectAnswer:
-                WordLabel.Animate("Shake", Shake(WordLabel), length: 500, easing: Easing.Linear, finished: (v, c) => viewModel.NotifyAnimationComplete());
-                break;
-        }
+        AnimationState animationState = viewModel.CurrentAnimationState;
+        if (animationState == AnimationState.Animating || animationState == AnimationState.NotAnimating) return;
+        animations[animationState](viewModel, WordLabel);
+        viewModel.CurrentAnimationState = AnimationState.Animating;
     }
 }

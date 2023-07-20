@@ -3,6 +3,7 @@ using SpellingBeebeto.Models.GameElements;
 using SpellingBeebeto.Utilities;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using Config = SpellingBeebeto.Models.GameConfiguration.GameConfiguration;
 
 namespace SpellingBeebeto.ViewModels.GameElements;
 
@@ -15,6 +16,7 @@ public class GameBoardVM : BindableBase
     public WordVM Word { get; private set; }
     public TileVM KeyTile { get; private set; }
     public ObservableCollection<TileVM> Tiles { get; private set; }
+    public ObservableCollection<string> LatestWords { get; private set; }
     public ObservableCollection<string> AcceptedWords => Model.AcceptedWords;
     public IRelayCommand DeleteLetterCommand { get; }
     public IRelayCommand ShuffleTilesCommand { get; }
@@ -28,13 +30,21 @@ public class GameBoardVM : BindableBase
         KeyTile = new(Model.KeyTile) { GameBoard = this };
         Tiles = UpdateTiles();
         Model.PropertyChanged += UpdateVM;
+        AcceptedWords.CollectionChanged += (o, e) =>
+        {
+            LatestWords = new(Model.AcceptedWords.Take(Config.LatestWordsLength));
+            NotifyPropertyChanged(nameof(LatestWords));
+        };
 
         DeleteLetterCommand = new RelayCommand(Model.DeleteLastLetter);
-        ShuffleTilesCommand = new RelayCommand(Model.ShuffleTiles);
+        ShuffleTilesCommand = new RelayCommand(ShuffleTiles);
         SubmitWordCommand = new RelayCommand(SubmitWord);
     }
     private ObservableCollection<TileVM> UpdateTiles() => new(Model.Tiles.Select(tile => new TileVM(tile) { GameBoard = this }));
-
+    public void ShuffleTiles()
+    {
+        Model.ShuffleTiles();
+    }
     public void SubmitWord()
     {
         if (Model.WordIsEmpty()) return;
@@ -44,13 +54,16 @@ public class GameBoardVM : BindableBase
 
     private void UpdateVM(object sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(Word)) NotifyPropertyChanged(nameof(Word));
+        if (e.PropertyName == nameof(Word))
+        {
+            if (Model.WordIsTooLong()) RejectLongWord();
+            NotifyPropertyChanged(nameof(Word));
+        }
         if (e.PropertyName == nameof(Tiles))
         {
             Tiles = UpdateTiles();
             NotifyPropertyChanged(nameof(Tiles));
         }
-        if (e.PropertyName == nameof(AcceptedWords)) NotifyPropertyChanged(nameof(AcceptedWords));
     }
 
     internal void NotifyAnimationComplete()
@@ -59,10 +72,10 @@ public class GameBoardVM : BindableBase
         Model.SubmitWord();
     }
 
-    internal void RejectOverlyLongWord()
+    internal void RejectLongWord()
     {
-        if (Model.WordIsTooLong())
-            SubmitWord();
+        CurrentAnimationState = AnimationState.IncorrectAnswer;
+        NotifyPropertyChanged(nameof(Model));
     }
 
     internal bool CanAddTile() => CurrentAnimationState == AnimationState.NotAnimating;

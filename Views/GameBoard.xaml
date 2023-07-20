@@ -4,7 +4,7 @@
              xmlns:viewModels="clr-namespace:SpellingBeebeto.ViewModels.GameElements"
              x:Class="SpellingBeebeto.Views.GameBoard"
              xmlns:fontAwesome="SpellingBeebeto.Utilities.FontAwesomeIcons">
-    <VerticalStackLayout Spacing="10" Margin="10" HorizontalOptions="Center">
+    <VerticalStackLayout Spacing="10" Margin="10">
         <HorizontalStackLayout Spacing="10">
             <Image Source="bee.png"
                    SemanticProperties.Description="The Spelling Beebeto bee!"
@@ -13,13 +13,15 @@
             <Label FontSize="22" Text="{Binding Version}" VerticalOptions="End" />
         </HorizontalStackLayout>
 
-        <CollectionView ItemsSource="{Binding AcceptedWords}" InputTransparent="True" ItemsLayout="HorizontalList" EmptyView="Type words to earn points!">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Label Text="{Binding}" Margin="10" FontSize="Medium" />
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+        <HorizontalStackLayout Spacing="10" HorizontalOptions="Start">
+            <CollectionView ItemsSource="{Binding LatestWords}" InputTransparent="True" ItemsLayout="HorizontalList">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Label Text="{Binding}" Margin="10" FontSize="Medium" />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </HorizontalStackLayout>
 
         <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
             <Label x:Name="WordLabel" Text="{Binding Word.Text}" FontSize="Large"/>

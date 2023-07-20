@@ -5,7 +5,6 @@ namespace SpellingBeebeto.Models.GameElements;
 
 public class GameBoard : BindableBase
 {
-    private readonly Random random = new();
     public RuleSet RuleSet { get; private set; }
     public Word Word { get; private set; }
     public Tile KeyTile { get; private set; }
@@ -13,7 +12,7 @@ public class GameBoard : BindableBase
     public ObservableCollection<string> AcceptedWords { get; private set; }
     public GameBoard()
     {
-        RuleSet = new RuleSet("HARUNEO", random.Next(0, Configuration.Configuration.WordSize - 1));
+        RuleSet = new RuleSet("ideology");
         KeyTile = new Tile(this, RuleSet.KeyLetter, isKeyTile: true);
         Tiles = RuleSet.Letters.Select(letter => new Tile(this, letter));
 
@@ -23,12 +22,14 @@ public class GameBoard : BindableBase
 
     internal bool WordIsTooShort() => Word.Text.Length < RuleSet.MinWordLength;
     internal bool WordIsTooLong() => Word.Text.Length >= RuleSet.MaxWordLength;
+    internal bool WordAlreadyFound(string word) => AcceptedWords.Any(text => text.ToLower() == word.ToLower());
     internal bool IsWordValid()
     {
         if (WordIsTooShort()) return false;
         if (WordIsTooLong()) return false;
         if (!Word.Text.Contains(RuleSet.KeyLetter)) return false;
-        if (!RuleSet.WordList.Contains(Word.Text)) return false;
+        if (!RuleSet.IsInWordList(Word.Text)) return false;
+        if (WordAlreadyFound(Word.Text)) return false;
         return true;
     }
 
@@ -36,7 +37,7 @@ public class GameBoard : BindableBase
     {
         if (IsWordValid())
         {
-            AcceptedWords.Insert(0, Word.AsTitleCase());
+            AcceptedWords.Insert(0, Word.ToTitleCase());
             NotifyPropertyChanged(nameof(AcceptedWords));
             // TODO: Increment score for words in the word list
         }
@@ -52,7 +53,6 @@ public class GameBoard : BindableBase
 
     internal void TryAddTileToWord(Tile tile)
     {
-        if (WordIsTooLong()) return;
         Word.AddLetter(tile.Letter);
         NotifyPropertyChanged(nameof(Word));
     }
@@ -66,7 +66,7 @@ public class GameBoard : BindableBase
     internal bool CanSubmitWord()
     {
         if (!IsWordValid()) return false;
-        if (AcceptedWords.Any(text => text.ToLower() == Word.Text.ToLower())) return false;
+        if (WordAlreadyFound(Word.Text)) return false;
         return true;
     }
 

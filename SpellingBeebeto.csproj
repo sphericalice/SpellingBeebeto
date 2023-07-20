@@ -33,6 +33,9 @@
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-android|AnyCPU'">
 	  <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 	  <ApplicationTitle>Spelling Beebeto</ApplicationTitle>
+	  <RunAOTCompilation>True</RunAOTCompilation>
+	  <AndroidKeyStore>False</AndroidKeyStore>
+	  <AndroidPackageFormat>apk</AndroidPackageFormat>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
@@ -53,6 +56,9 @@
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-android|AnyCPU'">
 	  <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 	  <ApplicationTitle>Spelling Beebeto</ApplicationTitle>
+	  <AndroidPackageFormat>apk</AndroidPackageFormat>
+	  <DebugSymbols>True</DebugSymbols>
+	  <AndroidKeyStore>False</AndroidKeyStore>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
@@ -88,7 +94,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Dictionaries\en_us.aff" />
+	  <None Remove="Resources\Dictionaries\en_us.dic" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Resources\Dictionaries\en_us.aff" />
+	  <EmbeddedResource Include="Resources\Dictionaries\en_us.dic" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+	  <PackageReference Include="WeCantSpell.Hunspell" Version="4.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

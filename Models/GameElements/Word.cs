@@ -23,11 +23,7 @@ namespace SpellingBeebeto.Models.GameElements
             Text = "";
         }
 
-        internal string AsTitleCase()
-        {
-            var textinfo = CultureInfo.CurrentCulture.TextInfo;
-            return textinfo.ToTitleCase(Text.ToLower());
-        }
+        internal string ToTitleCase() => CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Text.ToLower());
 
         internal bool IsEmpty() => Text.Length == 0;
     }

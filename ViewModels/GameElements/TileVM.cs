@@ -23,7 +23,7 @@ namespace SpellingBeebeto.ViewModels.GameElements
         {
             if (!GameBoard.CanAddTile()) return;
             Model.TryAddTileToWord();
-            GameBoard.RejectOverlyLongWord();
+            // GameBoard.TryRejectLongWord();
         }
     }
 }

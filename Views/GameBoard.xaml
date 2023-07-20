@@ -15,6 +15,11 @@
 
         <HorizontalStackLayout Spacing="10" HorizontalOptions="Start">
             <CollectionView ItemsSource="{Binding LatestWords}" InputTransparent="True" ItemsLayout="HorizontalList">
+                <CollectionView.EmptyView>
+                    <ContentView>
+                        <Label Text="Enter words to earn points!" Margin="10" FontSize="Medium" />
+                    </ContentView>
+                </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Label Text="{Binding}" Margin="10" FontSize="Medium" />
@@ -23,9 +28,12 @@
             </CollectionView>
         </HorizontalStackLayout>
 
-        <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+        <VerticalStackLayout HorizontalOptions="Center">
             <Label x:Name="WordLabel" Text="{Binding Word.Text}" FontSize="Large"/>
-        </HorizontalStackLayout>
+        </VerticalStackLayout>
+        <VerticalStackLayout HorizontalOptions="Center">
+            <Label Text="{Binding RejectionMessage}"/>
+        </VerticalStackLayout>
 
         <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
             <Button Text="{Binding Tiles[0].Letter}" Command="{Binding Tiles[0].ClickTileCommand}" VerticalOptions="Start" HeightRequest="50" WidthRequest="50"/>

@@ -16,14 +16,12 @@ namespace SpellingBeebeto.ViewModels.GameElements
         {
             Model = model;
 
-            ClickTileCommand = new RelayCommand(TryAddTileToWord);
+            ClickTileCommand = new RelayCommand(TryAddTileLetterToWord);
         }
 
-        private void TryAddTileToWord()
+        private void TryAddTileLetterToWord()
         {
-            if (!GameBoard.CanAddTile()) return;
-            Model.TryAddTileToWord();
-            // GameBoard.TryRejectLongWord();
+            if (GameBoard.CanClickTiles()) Model.AddTileLetterToWord();
         }
     }
 }

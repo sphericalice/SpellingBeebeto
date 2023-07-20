@@ -3,6 +3,7 @@ using SpellingBeebeto.Models.GameElements;
 using SpellingBeebeto.Utilities;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using static SpellingBeebeto.Models.GameElements.WordValidity;
 using Config = SpellingBeebeto.Models.GameConfiguration.GameConfiguration;
 
 namespace SpellingBeebeto.ViewModels.GameElements;
@@ -18,6 +19,7 @@ public class GameBoardVM : BindableBase
     public ObservableCollection<TileVM> Tiles { get; private set; }
     public ObservableCollection<string> LatestWords { get; private set; }
     public ObservableCollection<string> AcceptedWords => Model.AcceptedWords;
+    public string RejectionMessage => RejectionMessages[Model.Validity];
     public IRelayCommand DeleteLetterCommand { get; }
     public IRelayCommand ShuffleTilesCommand { get; }
     public IRelayCommand SubmitWordCommand { get; }
@@ -47,8 +49,13 @@ public class GameBoardVM : BindableBase
     }
     public void SubmitWord()
     {
-        if (Model.WordIsEmpty()) return;
-        CurrentAnimationState = Model.CanSubmitWord() ? AnimationState.CorrectAnswer : AnimationState.IncorrectAnswer;
+        NotifyPropertyChanged(nameof(RejectionMessage));
+        CurrentAnimationState = Model.GetWordValidity() switch
+        {
+            Validity.Empty => AnimationState.NotAnimating,
+            Validity.Valid => AnimationState.CorrectAnswer,
+            _ => AnimationState.IncorrectAnswer,
+        };
         NotifyPropertyChanged(nameof(Word));
     }
 
@@ -56,7 +63,7 @@ public class GameBoardVM : BindableBase
     {
         if (e.PropertyName == nameof(Word))
         {
-            if (Model.WordIsTooLong()) RejectLongWord();
+            if (Model.IsWordTooLong()) RejectLongWord();
             NotifyPropertyChanged(nameof(Word));
         }
         if (e.PropertyName == nameof(Tiles))
@@ -70,13 +77,14 @@ public class GameBoardVM : BindableBase
     {
         CurrentAnimationState = AnimationState.NotAnimating;
         Model.SubmitWord();
+        NotifyPropertyChanged(nameof(RejectionMessage));
     }
 
     internal void RejectLongWord()
     {
         CurrentAnimationState = AnimationState.IncorrectAnswer;
-        NotifyPropertyChanged(nameof(Model));
+        NotifyPropertyChanged(nameof(RejectionMessage));
     }
 
-    internal bool CanAddTile() => CurrentAnimationState == AnimationState.NotAnimating;
+    internal bool CanClickTiles() => CurrentAnimationState == AnimationState.NotAnimating;
 }

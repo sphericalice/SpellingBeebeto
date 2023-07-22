@@ -11,15 +11,14 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <HorizontalStackLayout Spacing="10">
+        <HorizontalStackLayout Spacing="10" Margin="10">
             <Image Source="bee.png"
                     SemanticProperties.Description="The Spelling Beebeto bee!"
                     HeightRequest="64" />
-            <Label FontSize="22" FontAttributes="Bold" Text="{Binding Title}" VerticalOptions="End" />
-            <Label FontSize="22" Text="{Binding Version}" VerticalOptions="End" />
+            <Label FontSize="22" FontAttributes="Bold" Text="{Binding Title}" VerticalOptions="Center" />
+            <Label FontSize="22" Text="{Binding Version}" VerticalOptions="Center" />
         </HorizontalStackLayout>
 
         <VerticalStackLayout Grid.Row="1" HorizontalOptions="Center">
@@ -31,6 +30,7 @@
 
         <Grid Grid.Row="3" RowSpacing="10">
             <Grid.RowDefinitions>
+                <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
@@ -57,21 +57,21 @@
                 <Button Text="{Binding Tiles[4].Letter}" Command="{Binding Tiles[4].ClickTileCommand}" VerticalOptions="Start" HeightRequest="50" WidthRequest="50"/>
                 <Button Text="{Binding Tiles[5].Letter}" Command="{Binding Tiles[5].ClickTileCommand}" VerticalOptions="Start" HeightRequest="50" WidthRequest="50"/>
             </HorizontalStackLayout>
+
+            <HorizontalStackLayout Grid.Row="3" Spacing="10" Margin="10" HorizontalOptions="Center">
+                <Button Text="Delete" Command="{Binding DeleteLetterCommand}" />
+                <Button Text="{x:Static fontAwesome:FontAwesomeIcons.Shuffle}" Command="{Binding ShuffleTilesCommand}">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="FontFamily" Value="FontAwesomeSolid"/>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Button Text="Submit" Command="{Binding SubmitWordCommand}" />
+            </HorizontalStackLayout>
         </Grid>
 
-        <HorizontalStackLayout Grid.Row="4" Spacing="10" Margin="10" HorizontalOptions="Center">
-            <Button Text="Delete" Command="{Binding DeleteLetterCommand}" />
-            <Button Text="{x:Static fontAwesome:FontAwesomeIcons.Shuffle}" Command="{Binding ShuffleTilesCommand}">
-                <Button.Style>
-                    <Style TargetType="Button">
-                        <Setter Property="FontFamily" Value="FontAwesomeSolid"/>
-                    </Style>
-                </Button.Style>
-            </Button>
-            <Button Text="Submit" Command="{Binding SubmitWordCommand}" />
-        </HorizontalStackLayout>
-
-        <Grid Grid.Row="5" HorizontalOptions="FillAndExpand">
+        <Grid Grid.Row="4" HorizontalOptions="FillAndExpand" Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition/>
             </Grid.RowDefinitions>
@@ -79,7 +79,7 @@
                 <ColumnDefinition/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <CollectionView ItemsSource="{Binding LatestWords}" ItemsLayout="HorizontalList" VerticalOptions="StartAndExpand" HorizontalOptions="Fill" IsVisible="{Binding CollapseWords}" >
+            <CollectionView ItemsSource="{Binding LatestWords}" ItemsLayout="HorizontalList" InputTransparent="True" IsVisible="{Binding CollapseWords}" >
                 <CollectionView.EmptyView>
                     <ContentView>
                         <Label Text="Enter words to earn points!" Margin="10" FontSize="Medium" />
@@ -98,7 +98,7 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <Label Text="{Binding WordsFoundText}" Margin="10" FontSize="Medium" />
-                <CollectionView ItemsSource="{Binding AcceptedWords}" ItemsLayout="VerticalList" VerticalOptions="StartAndExpand" HorizontalOptions="Fill" Grid.Row="1">
+                <CollectionView ItemsSource="{Binding AcceptedWords}" ItemsLayout="VerticalList" Grid.Row="1" ItemsUpdatingScrollMode="KeepItemsInView">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Label Text="{Binding}" Margin="10" FontSize="Medium" />
@@ -107,7 +107,7 @@
                 </CollectionView>
             </Grid>
 
-            <Button Text="{Binding ToggleWordsButtonText}" Command="{Binding ToggleWordExpansionCommand}" VerticalOptions="Start" HorizontalOptions="End" Grid.Column="1" WidthRequest="50" HeightRequest="50">
+            <Button Text="{Binding ToggleWordsButtonText}" Command="{Binding ToggleWordExpansionCommand}" Grid.Column="1" VerticalOptions="Start" WidthRequest="50" HeightRequest="50">
                 <Button.Style>
                     <Style TargetType="Button">
                         <Setter Property="FontFamily" Value="FontAwesomeSolid"/>

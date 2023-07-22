@@ -14,7 +14,7 @@ public class GameBoard : BindableBase
     public Validity Validity => GetWordValidity();
     public GameBoard()
     {
-        RuleSet = new RuleSet("quietness");
+        RuleSet = new RuleSet("collection");
         KeyTile = new Tile(this, RuleSet.KeyLetter, isKeyTile: true);
         Tiles = RuleSet.Letters.Select(letter => new Tile(this, letter));
 

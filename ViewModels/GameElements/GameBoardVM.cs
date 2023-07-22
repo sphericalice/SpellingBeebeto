@@ -14,21 +14,25 @@ public class GameBoardVM : BindableBase
 
     public string Title => AppInfo.Name;
     public string Version => AppInfo.VersionString;
-    public WordVM Word { get; private set; }
+    public string Word => Model.Word.Text.Replace(KeyTile.Letter.ToString(), $"<u>{KeyTile.Letter}</u>");
     public TileVM KeyTile { get; private set; }
     public ObservableCollection<TileVM> Tiles { get; private set; }
     public ObservableCollection<string> LatestWords { get; private set; }
     public ObservableCollection<string> AcceptedWords => Model.AcceptedWords;
     public string RejectionMessage => RejectionMessages[Model.Validity];
+    public bool ExpandWords { get; private set; }
+    public bool CollapseWords => !ExpandWords;
+    public string ToggleWordsButtonText => ExpandWords ? FontAwesomeIcons.CaretUp : FontAwesomeIcons.CaretDown;
+    public string WordsFoundText => $"You have found {AcceptedWords.Count} word{(AcceptedWords.Count == 1 ? "" : "s")}.";
     public IRelayCommand DeleteLetterCommand { get; }
     public IRelayCommand ShuffleTilesCommand { get; }
     public IRelayCommand SubmitWordCommand { get; }
+    public IRelayCommand ToggleWordExpansionCommand { get; }
     public AnimationState CurrentAnimationState { get; internal set; } = AnimationState.NotAnimating;
 
     public GameBoardVM(GameBoard model)
     {
         Model = model;
-        Word = new(Model.Word);
         KeyTile = new(Model.KeyTile) { GameBoard = this };
         Tiles = UpdateTiles();
         Model.PropertyChanged += UpdateVM;
@@ -36,17 +40,24 @@ public class GameBoardVM : BindableBase
         {
             LatestWords = new(Model.AcceptedWords.Take(Config.LatestWordsLength));
             NotifyPropertyChanged(nameof(LatestWords));
+            NotifyPropertyChanged(nameof(WordsFoundText));
         };
 
         DeleteLetterCommand = new RelayCommand(Model.DeleteLastLetter);
-        ShuffleTilesCommand = new RelayCommand(ShuffleTiles);
+        ShuffleTilesCommand = new RelayCommand(Model.ShuffleTiles);
         SubmitWordCommand = new RelayCommand(SubmitWord);
+        ToggleWordExpansionCommand = new RelayCommand(ToggleWordExpansion);
     }
-    private ObservableCollection<TileVM> UpdateTiles() => new(Model.Tiles.Select(tile => new TileVM(tile) { GameBoard = this }));
-    public void ShuffleTiles()
+
+    private void ToggleWordExpansion()
     {
-        Model.ShuffleTiles();
+        ExpandWords = !ExpandWords;
+        NotifyPropertyChanged(nameof(ExpandWords));
+        NotifyPropertyChanged(nameof(CollapseWords));
+        NotifyPropertyChanged(nameof(ToggleWordsButtonText));
     }
+
+    private ObservableCollection<TileVM> UpdateTiles() => new(Model.Tiles.Select(tile => new TileVM(tile) { GameBoard = this }));
     public void SubmitWord()
     {
         NotifyPropertyChanged(nameof(RejectionMessage));

@@ -4,17 +4,82 @@
              xmlns:viewModels="clr-namespace:SpellingBeebeto.ViewModels.GameElements"
              x:Class="SpellingBeebeto.Views.GameBoard"
              xmlns:fontAwesome="SpellingBeebeto.Utilities.FontAwesomeIcons">
-    <VerticalStackLayout Spacing="10" Margin="10">
+
+    <Grid RowSpacing="10" HorizontalOptions="Fill">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
         <HorizontalStackLayout Spacing="10">
             <Image Source="bee.png"
-                   SemanticProperties.Description="The Spelling Beebeto bee!"
-                   HeightRequest="64" />
+                    SemanticProperties.Description="The Spelling Beebeto bee!"
+                    HeightRequest="64" />
             <Label FontSize="22" FontAttributes="Bold" Text="{Binding Title}" VerticalOptions="End" />
             <Label FontSize="22" Text="{Binding Version}" VerticalOptions="End" />
         </HorizontalStackLayout>
 
-        <HorizontalStackLayout Spacing="10" HorizontalOptions="Start">
-            <CollectionView ItemsSource="{Binding LatestWords}" InputTransparent="True" ItemsLayout="HorizontalList">
+        <VerticalStackLayout Grid.Row="1" HorizontalOptions="Center">
+            <Label x:Name="WordLabel" Text="{Binding Word}" FontSize="Large" TextType="Html"/>
+        </VerticalStackLayout>
+        <VerticalStackLayout Grid.Row="2" HorizontalOptions="Center">
+            <Label Text="{Binding RejectionMessage}"/>
+        </VerticalStackLayout>
+
+        <Grid Grid.Row="3" RowSpacing="10">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+                <Button Text="{Binding Tiles[0].Letter}" Command="{Binding Tiles[0].ClickTileCommand}" VerticalOptions="Start" HeightRequest="50" WidthRequest="50"/>
+                <Button Text="{Binding Tiles[1].Letter}" Command="{Binding Tiles[1].ClickTileCommand}" VerticalOptions="Start" HeightRequest="50" WidthRequest="50"/>
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout Grid.Row="1" Spacing="10" HorizontalOptions="Center">
+                <Button Text="{Binding Tiles[2].Letter}" Command="{Binding Tiles[2].ClickTileCommand}" VerticalOptions="Start" HeightRequest="50" WidthRequest="50"/>
+                <Button Text="{Binding KeyTile.Letter}" Command="{Binding KeyTile.ClickTileCommand}" VerticalOptions="Start" HeightRequest="50" WidthRequest="50">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Primary}}" />
+                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Button Text="{Binding Tiles[3].Letter}" Command="{Binding Tiles[3].ClickTileCommand}" VerticalOptions="Start" HeightRequest="50" WidthRequest="50"/>
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout Grid.Row="2" Spacing="10" HorizontalOptions="Center">
+                <Button Text="{Binding Tiles[4].Letter}" Command="{Binding Tiles[4].ClickTileCommand}" VerticalOptions="Start" HeightRequest="50" WidthRequest="50"/>
+                <Button Text="{Binding Tiles[5].Letter}" Command="{Binding Tiles[5].ClickTileCommand}" VerticalOptions="Start" HeightRequest="50" WidthRequest="50"/>
+            </HorizontalStackLayout>
+        </Grid>
+
+        <HorizontalStackLayout Grid.Row="4" Spacing="10" Margin="10" HorizontalOptions="Center">
+            <Button Text="Delete" Command="{Binding DeleteLetterCommand}" />
+            <Button Text="{x:Static fontAwesome:FontAwesomeIcons.Shuffle}" Command="{Binding ShuffleTilesCommand}">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="FontFamily" Value="FontAwesomeSolid"/>
+                    </Style>
+                </Button.Style>
+            </Button>
+            <Button Text="Submit" Command="{Binding SubmitWordCommand}" />
+        </HorizontalStackLayout>
+
+        <Grid Grid.Row="5" HorizontalOptions="FillAndExpand">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <CollectionView ItemsSource="{Binding LatestWords}" ItemsLayout="HorizontalList" VerticalOptions="StartAndExpand" HorizontalOptions="Fill" IsVisible="{Binding CollapseWords}" >
                 <CollectionView.EmptyView>
                     <ContentView>
                         <Label Text="Enter words to earn points!" Margin="10" FontSize="Medium" />
@@ -26,48 +91,29 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-        </HorizontalStackLayout>
 
-        <VerticalStackLayout HorizontalOptions="Center">
-            <Label x:Name="WordLabel" Text="{Binding Word.Text}" FontSize="Large"/>
-        </VerticalStackLayout>
-        <VerticalStackLayout HorizontalOptions="Center">
-            <Label Text="{Binding RejectionMessage}"/>
-        </VerticalStackLayout>
+            <Grid IsVisible="{Binding ExpandWords}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Label Text="{Binding WordsFoundText}" Margin="10" FontSize="Medium" />
+                <CollectionView ItemsSource="{Binding AcceptedWords}" ItemsLayout="VerticalList" VerticalOptions="StartAndExpand" HorizontalOptions="Fill" Grid.Row="1">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Label Text="{Binding}" Margin="10" FontSize="Medium" />
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
 
-        <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
-            <Button Text="{Binding Tiles[0].Letter}" Command="{Binding Tiles[0].ClickTileCommand}" VerticalOptions="Start" HeightRequest="50" WidthRequest="50"/>
-            <Button Text="{Binding Tiles[1].Letter}" Command="{Binding Tiles[1].ClickTileCommand}" VerticalOptions="Start" HeightRequest="50" WidthRequest="50"/>
-        </HorizontalStackLayout>
-
-        <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
-            <Button Text="{Binding Tiles[2].Letter}" Command="{Binding Tiles[2].ClickTileCommand}" VerticalOptions="Start" HeightRequest="50" WidthRequest="50"/>
-            <Button Text="{Binding KeyTile.Letter}" Command="{Binding KeyTile.ClickTileCommand}" VerticalOptions="Start" HeightRequest="50" WidthRequest="50">
-                <Button.Style>
-                    <Style TargetType="Button">
-                        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Primary}}" />
-                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
-                    </Style>
-                </Button.Style>
-            </Button>
-            <Button Text="{Binding Tiles[3].Letter}" Command="{Binding Tiles[3].ClickTileCommand}" VerticalOptions="Start" HeightRequest="50" WidthRequest="50"/>
-        </HorizontalStackLayout>
-
-        <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
-        <Button Text="{Binding Tiles[4].Letter}" Command="{Binding Tiles[4].ClickTileCommand}" VerticalOptions="Start" HeightRequest="50" WidthRequest="50"/>
-        <Button Text="{Binding Tiles[5].Letter}" Command="{Binding Tiles[5].ClickTileCommand}" VerticalOptions="Start" HeightRequest="50" WidthRequest="50"/>
-        </HorizontalStackLayout>
-
-        <HorizontalStackLayout Spacing="10" Margin="10" HorizontalOptions="Center">
-            <Button Text="Delete" Command="{Binding DeleteLetterCommand}" />
-            <Button Text="{x:Static fontAwesome:FontAwesomeIcons.Shuffle}" Command="{Binding ShuffleTilesCommand}">
+            <Button Text="{Binding ToggleWordsButtonText}" Command="{Binding ToggleWordExpansionCommand}" VerticalOptions="Start" HorizontalOptions="End" Grid.Column="1" WidthRequest="50" HeightRequest="50">
                 <Button.Style>
                     <Style TargetType="Button">
                         <Setter Property="FontFamily" Value="FontAwesomeSolid"/>
                     </Style>
                 </Button.Style>
             </Button>
-            <Button Text="Submit" Command="{Binding SubmitWordCommand}" />
-        </HorizontalStackLayout>
-    </VerticalStackLayout>
+        </Grid>
+    </Grid>
 </ContentPage>

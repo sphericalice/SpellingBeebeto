@@ -37,6 +37,7 @@ public partial class GameBoard : ContentPage
     private void GameBoardVM_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
         if (sender is not GameBoardVM viewModel) return;
+        if (e.PropertyName == nameof(viewModel.WordListCollapsed)) DynamicRow.Height = viewModel.WordListCollapsed ? new GridLength(1, GridUnitType.Auto) : new GridLength(1, GridUnitType.Star);
         AnimationState animationState = viewModel.CurrentAnimationState;
         if (animationState == AnimationState.Animating || animationState == AnimationState.NotAnimating) return;
         animations[animationState](viewModel, WordLabel);

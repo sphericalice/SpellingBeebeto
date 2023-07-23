@@ -1,4 +1,6 @@
-﻿namespace SpellingBeebeto;
+﻿using CommunityToolkit.Maui;
+
+namespace SpellingBeebeto;
 
 public static class MauiProgram
 {
@@ -7,6 +9,7 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+            .UseMauiCommunityToolkit()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("fa-brands-400.ttf", "FontAwesomeBrands");
@@ -25,8 +28,6 @@ public static class MauiProgram
     {
         mauiAppBuilder.Services.AddSingleton<ViewModels.GameElements.GameBoardVM>();
 
-        mauiAppBuilder.Services.AddTransient<ViewModels.GameElements.TileVM>();
-
         return mauiAppBuilder;
     }
     public static MauiAppBuilder RegisterViews(this MauiAppBuilder mauiAppBuilder)
@@ -38,8 +39,6 @@ public static class MauiProgram
     public static MauiAppBuilder RegisterModels(this MauiAppBuilder mauiAppBuilder)
     {
         mauiAppBuilder.Services.AddSingleton<Models.GameElements.GameBoard>();
-
-        mauiAppBuilder.Services.AddTransient<Models.GameElements.Tile>();
 
         return mauiAppBuilder;
     }

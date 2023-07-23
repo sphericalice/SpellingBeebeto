@@ -19,10 +19,9 @@ public class GameBoardVM : BindableBase
     public ObservableCollection<TileVM> Tiles { get; private set; }
     public ObservableCollection<string> LatestWords { get; private set; }
     public ObservableCollection<string> AcceptedWords => Model.AcceptedWords;
+    public ObservableCollection<string> SortedWords => new(AcceptedWords.OrderBy(s => s));
     public string RejectionMessage => RejectionMessages[Model.Validity];
-    public bool ExpandWords { get; private set; }
-    public bool CollapseWords => !ExpandWords;
-    public string ToggleWordsButtonText => ExpandWords ? FontAwesomeIcons.CaretUp : FontAwesomeIcons.CaretDown;
+    public bool WordListCollapsed { get; private set; } = true;
     public string WordsFoundText => $"You have found {AcceptedWords.Count} word{(AcceptedWords.Count == 1 ? "" : "s")}.";
     public IRelayCommand DeleteLetterCommand { get; }
     public IRelayCommand ShuffleTilesCommand { get; }
@@ -51,10 +50,9 @@ public class GameBoardVM : BindableBase
 
     private void ToggleWordExpansion()
     {
-        ExpandWords = !ExpandWords;
-        NotifyPropertyChanged(nameof(ExpandWords));
-        NotifyPropertyChanged(nameof(CollapseWords));
-        NotifyPropertyChanged(nameof(ToggleWordsButtonText));
+        WordListCollapsed = !WordListCollapsed;
+        NotifyPropertyChanged(nameof(WordListCollapsed));
+        NotifyPropertyChanged(nameof(SortedWords));
     }
 
     private ObservableCollection<TileVM> UpdateTiles() => new(Model.Tiles.Select(tile => new TileVM(tile) { GameBoard = this }));

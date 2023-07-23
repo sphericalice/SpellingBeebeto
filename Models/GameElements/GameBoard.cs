@@ -14,12 +14,12 @@ public class GameBoard : BindableBase
     public Validity Validity => GetWordValidity();
     public GameBoard()
     {
-        RuleSet = new RuleSet("collection");
+        RuleSet = new RuleSet("amicably");
         KeyTile = new Tile(this, RuleSet.KeyLetter, isKeyTile: true);
         Tiles = RuleSet.Letters.Select(letter => new Tile(this, letter));
 
         Word = new("");
-        AcceptedWords = new ObservableCollection<string>();
+        AcceptedWords = new();
     }
 
     internal bool IsWordEmpty() => Word.IsEmpty();

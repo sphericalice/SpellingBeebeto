@@ -3,15 +3,21 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:SpellingBeebeto.ViewModels.GameElements"
              x:Class="SpellingBeebeto.Views.GameBoard"
-             xmlns:fontAwesome="SpellingBeebeto.Utilities.FontAwesomeIcons">
+             xmlns:fontAwesome="SpellingBeebeto.Utilities.FontAwesomeIcons"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <Grid RowSpacing="10" HorizontalOptions="Fill">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" x:Name="DynamicRow"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <HorizontalStackLayout Spacing="10" Margin="10">
             <Image Source="bee.png"
@@ -21,14 +27,60 @@
             <Label FontSize="22" Text="{Binding Version}" VerticalOptions="Center" />
         </HorizontalStackLayout>
 
-        <VerticalStackLayout Grid.Row="1" HorizontalOptions="Center">
+        <Grid Grid.Row="1"  HorizontalOptions="FillAndExpand" Margin="10" ColumnSpacing="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <CollectionView Margin="10" IsVisible="{Binding WordListCollapsed}" ItemsSource="{Binding LatestWords}" ItemsLayout="HorizontalList" InputTransparent="True">
+                <CollectionView.EmptyView>
+                    <Label Text="Enter words to earn points!" Margin="10" FontSize="Medium" VerticalOptions="Center"/>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Label Text="{Binding}" Margin="10" FontSize="Medium" VerticalOptions="Center"/>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Label IsVisible="{Binding Path=WordListCollapsed, Converter={StaticResource InvertedBoolConverter}}" Text="{Binding WordsFoundText}" Margin="10" FontSize="Medium" VerticalOptions="Center"/>
+
+            <Button Command="{Binding ToggleWordExpansionCommand}" Grid.Column="1" VerticalOptions="Start" WidthRequest="50" HeightRequest="50">
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button" Binding="{Binding Path=WordListCollapsed, Converter={StaticResource InvertedBoolConverter}}" Value="True">
+                        <Setter Property="Text" Value="{x:Static fontAwesome:FontAwesomeIcons.CaretUp}" />
+                    </DataTrigger>
+                    <DataTrigger TargetType="Button" Binding="{Binding Path=WordListCollapsed, Converter={StaticResource InvertedBoolConverter}}" Value="False">
+                        <Setter Property="Text" Value="{x:Static fontAwesome:FontAwesomeIcons.CaretDown}" />
+                    </DataTrigger>
+                </Button.Triggers>
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="FontFamily" Value="FontAwesomeSolid"/>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </Grid>
+
+        <CollectionView IsVisible="{Binding Path=WordListCollapsed, Converter={StaticResource InvertedBoolConverter}}" ItemsSource="{Binding SortedWords}" Grid.Row="2" ItemsUpdatingScrollMode="KeepItemsInView">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Span="2" Orientation="Vertical"/>
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Label Text="{Binding}" Margin="10" FontSize="Medium" />
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <VerticalStackLayout Grid.Row="2" HorizontalOptions="Center" IsVisible="{Binding WordListCollapsed}" Spacing="10">
             <Label x:Name="WordLabel" Text="{Binding Word}" FontSize="Large" TextType="Html"/>
         </VerticalStackLayout>
-        <VerticalStackLayout Grid.Row="2" HorizontalOptions="Center">
+        <VerticalStackLayout Grid.Row="3" HorizontalOptions="Center" IsVisible="{Binding WordListCollapsed}">
             <Label Text="{Binding RejectionMessage}"/>
         </VerticalStackLayout>
 
-        <Grid Grid.Row="3" RowSpacing="10">
+        <Grid Grid.Row="4" RowSpacing="10" IsVisible="{Binding WordListCollapsed}">
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition/>
@@ -59,61 +111,16 @@
             </HorizontalStackLayout>
 
             <HorizontalStackLayout Grid.Row="3" Spacing="10" Margin="10" HorizontalOptions="Center">
-                <Button Text="Delete" Command="{Binding DeleteLetterCommand}" />
-                <Button Text="{x:Static fontAwesome:FontAwesomeIcons.Shuffle}" Command="{Binding ShuffleTilesCommand}">
+                <Button Text="Delete" Command="{Binding DeleteLetterCommand}" HeightRequest="50"/>
+                <Button Text="{x:Static fontAwesome:FontAwesomeIcons.Shuffle}" Command="{Binding ShuffleTilesCommand}" HeightRequest="50">
                     <Button.Style>
                         <Style TargetType="Button">
                             <Setter Property="FontFamily" Value="FontAwesomeSolid"/>
                         </Style>
                     </Button.Style>
                 </Button>
-                <Button Text="Submit" Command="{Binding SubmitWordCommand}" />
+                <Button Text="Submit" Command="{Binding SubmitWordCommand}" HeightRequest="50"/>
             </HorizontalStackLayout>
-        </Grid>
-
-        <Grid Grid.Row="4" HorizontalOptions="FillAndExpand" Margin="10">
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <CollectionView ItemsSource="{Binding LatestWords}" ItemsLayout="HorizontalList" InputTransparent="True" IsVisible="{Binding CollapseWords}" >
-                <CollectionView.EmptyView>
-                    <ContentView>
-                        <Label Text="Enter words to earn points!" Margin="10" FontSize="Medium" />
-                    </ContentView>
-                </CollectionView.EmptyView>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Label Text="{Binding}" Margin="10" FontSize="Medium" />
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-
-            <Grid IsVisible="{Binding ExpandWords}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <Label Text="{Binding WordsFoundText}" Margin="10" FontSize="Medium" />
-                <CollectionView ItemsSource="{Binding AcceptedWords}" ItemsLayout="VerticalList" Grid.Row="1" ItemsUpdatingScrollMode="KeepItemsInView">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Label Text="{Binding}" Margin="10" FontSize="Medium" />
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-            </Grid>
-
-            <Button Text="{Binding ToggleWordsButtonText}" Command="{Binding ToggleWordExpansionCommand}" Grid.Column="1" VerticalOptions="Start" WidthRequest="50" HeightRequest="50">
-                <Button.Style>
-                    <Style TargetType="Button">
-                        <Setter Property="FontFamily" Value="FontAwesomeSolid"/>
-                    </Style>
-                </Button.Style>
-            </Button>
         </Grid>
     </Grid>
 </ContentPage>

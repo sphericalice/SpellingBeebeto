@@ -10,7 +10,7 @@
         <ShellContent
             Title="Spelling Beebeto"
             ContentTemplate="{DataTemplate views:GameBoard}"
-            Icon="{OnPlatform 'bee.png'}" />
+            Icon="bee.png" />
     </TabBar>
 
 </Shell>

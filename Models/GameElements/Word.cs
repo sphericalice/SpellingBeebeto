@@ -24,7 +24,5 @@ namespace SpellingBeebeto.Models.GameElements
         }
 
         internal string ToTitleCase() => CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Text.ToLower());
-
-        internal bool IsEmpty() => Text.Length == 0;
     }
 }

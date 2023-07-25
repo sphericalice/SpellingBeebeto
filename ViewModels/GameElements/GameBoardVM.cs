@@ -35,6 +35,7 @@ public class GameBoardVM : BindableBase
         KeyTile = new(Model.KeyTile) { GameBoard = this };
         Tiles = UpdateTiles();
         Model.PropertyChanged += UpdateVM;
+        LatestWords = new(Model.AcceptedWords.Take(Config.LatestWordsLength));
         AcceptedWords.CollectionChanged += (o, e) =>
         {
             LatestWords = new(Model.AcceptedWords.Take(Config.LatestWordsLength));

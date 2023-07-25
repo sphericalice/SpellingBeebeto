@@ -12,8 +12,6 @@ public class GameBoardVM : BindableBase
 {
     private readonly GameBoard Model;
 
-    public string Title => AppInfo.Name;
-    public string Version => AppInfo.VersionString;
     public string Word => Model.Word.Text.Replace(KeyTile.Letter.ToString(), $"<u>{KeyTile.Letter}</u>");
     public TileVM KeyTile { get; private set; }
     public ObservableCollection<TileVM> Tiles { get; private set; }

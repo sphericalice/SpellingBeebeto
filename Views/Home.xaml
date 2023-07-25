@@ -6,8 +6,16 @@
              Title="Home">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Button Text="Play!" VerticalOptions="Center" HorizontalOptions="Center" Command="{Binding PlayCommand}" WidthRequest="100" HeightRequest="100"/>
+        <HorizontalStackLayout Spacing="10" Margin="10">
+            <Image Source="bee.png"
+                    SemanticProperties.Description="The Spelling Beebeto bee!"
+                    HeightRequest="64" />
+            <Label FontSize="22" FontAttributes="Bold" Text="{Binding Title}" VerticalOptions="Center" />
+            <Label FontSize="22" Text="{Binding Version}" VerticalOptions="Center" />
+        </HorizontalStackLayout>
+        <Button Grid.Row="1" Text="Play!" VerticalOptions="Center" HorizontalOptions="Center" Command="{Binding PlayCommand}" WidthRequest="100" HeightRequest="100"/>
     </Grid>
 </ContentPage>

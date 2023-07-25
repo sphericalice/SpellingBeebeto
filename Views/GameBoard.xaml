@@ -15,20 +15,10 @@
     <Grid RowSpacing="10" HorizontalOptions="Fill">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto" x:Name="DynamicRow"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <HorizontalStackLayout Spacing="10" Margin="10">
-            <Image Source="bee.png"
-                    SemanticProperties.Description="The Spelling Beebeto bee!"
-                    HeightRequest="64" />
-            <Label FontSize="22" FontAttributes="Bold" Text="{Binding Title}" VerticalOptions="Center" />
-            <Label FontSize="22" Text="{Binding Version}" VerticalOptions="Center" />
-        </HorizontalStackLayout>
-
-        <Grid Grid.Row="1"  HorizontalOptions="FillAndExpand" Margin="10" ColumnSpacing="10">
+        <Grid HorizontalOptions="FillAndExpand" Margin="10" ColumnSpacing="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="Auto"/>
@@ -63,7 +53,12 @@
             </Button>
         </Grid>
 
-        <CollectionView IsVisible="{Binding Path=WordListCollapsed, Converter={StaticResource InvertedBoolConverter}}" ItemsSource="{Binding SortedWords}" Grid.Row="2" ItemsUpdatingScrollMode="KeepItemsInView">
+        <VerticalStackLayout Grid.Row="1" IsVisible="{Binding WordListCollapsed}">
+            <Label x:Name="WordLabel" Text="{Binding Word}" FontSize="Large" TextType="Html" HorizontalOptions="Center"/>
+            <Label Text="{Binding RejectionMessage}" HorizontalOptions="Center"/>
+        </VerticalStackLayout>
+
+        <CollectionView Grid.Row="1" IsVisible="{Binding Path=WordListCollapsed, Converter={StaticResource InvertedBoolConverter}}" ItemsSource="{Binding SortedWords}" ItemsUpdatingScrollMode="KeepItemsInView">
             <CollectionView.ItemsLayout>
                 <GridItemsLayout Span="2" Orientation="Vertical"/>
             </CollectionView.ItemsLayout>
@@ -74,14 +69,7 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <VerticalStackLayout Grid.Row="2" HorizontalOptions="Center" IsVisible="{Binding WordListCollapsed}" Spacing="10">
-            <Label x:Name="WordLabel" Text="{Binding Word}" FontSize="Large" TextType="Html"/>
-        </VerticalStackLayout>
-        <VerticalStackLayout Grid.Row="3" HorizontalOptions="Center" IsVisible="{Binding WordListCollapsed}">
-            <Label Text="{Binding RejectionMessage}"/>
-        </VerticalStackLayout>
-
-        <Grid Grid.Row="4" RowSpacing="10" IsVisible="{Binding WordListCollapsed}">
+        <Grid Grid.Row="2" RowSpacing="10" IsVisible="{Binding WordListCollapsed}">
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition/>
